@@ -1,8 +1,9 @@
 from datetime import datetime
 import MySQLdb.connections
 import time
+from helper.ds18b20 import read_temp_raw, read_temp
 
-cnx = MySQLdb.connect(user='root', password='root', database='pidata', host='127.0.0.1', port=3306)
+cnx = MySQLdb.connect(user='django', password='django-user-password', database='pidata', host='127.0.0.1', port=3306)
 cursor = cnx.cursor()
 
 sensors = [
@@ -18,10 +19,10 @@ add_value = ("INSERT INTO webapp_entry "
 while True:
 	for i in sensors:
 		now = datetime.now()
-		value = 24
+		value = read_temp(i['id_key'])
 		data_value = (i['id'], value, now)
 		cursor.execute(add_value, data_value)
-		print("data inserted=> sensor-id:'" + i['id_key'] + "', value:" + value)
+		print("data inserted=> sensor-id:'" + i['id_key'] + "', value:" + str(value))
 
 	# Insert new rows into entries for each sensor
 	cnx.commit()

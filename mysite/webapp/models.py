@@ -8,7 +8,7 @@ class SensorType(models.Model):
 	name = models.CharField(max_length=50)
 	unit = models.CharField(max_length=50)
 	measure = models.CharField(max_length=50)
-	def __str__()
+	def __str__(self):
 		return self.name
 
 class Sensor(models.Model):
@@ -33,7 +33,7 @@ class Sensor(models.Model):
 			entries_json.append(i.get_json())
 		return entries_json
 
-	def __str__()
+	def __str__(self):
 		return self.given_name
 
 class Entry(models.Model):
