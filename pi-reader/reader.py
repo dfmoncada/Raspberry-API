@@ -2,12 +2,11 @@ from datetime import datetime
 import MySQLdb.connections
 import time
 
-cnx = MySQLdb.connect(user='root', password='root', database='pi_db', host='127.0.0.1', port=8889)
+cnx = MySQLdb.connect(user='root', password='root', database='pidata', host='127.0.0.1', port=3306)
 cursor = cnx.cursor()
 
 sensors = [
-	{'id':1,'id_key':'28-blablabla'},
-	{'id':2,'id_key':'28-bla2bla2b'}
+	{'id':1,'id_key':'28-051693633fff'},
 ]
 
 
@@ -22,10 +21,13 @@ while True:
 		value = 24
 		data_value = (i['id'], value, now)
 		cursor.execute(add_value, data_value)
+		print("data inserted=> sensor-id:'" + i['id_key'] + "', value:" + value)
 
 	# Insert new rows into entries for each sensor
 	cnx.commit()
-	time.sleep(5)
+	print("loop commited.")
+	time.sleep(60)
+
 
 
 
