@@ -8,6 +8,8 @@ class SensorType(models.Model):
 	name = models.CharField(max_length=50)
 	unit = models.CharField(max_length=50)
 	measure = models.CharField(max_length=50)
+	def __str__()
+		return self.name
 
 class Sensor(models.Model):
 	sensorType = models.ForeignKey(SensorType, on_delete=models.CASCADE)
@@ -15,14 +17,14 @@ class Sensor(models.Model):
 	id_number = models.CharField(max_length=50)
 
 	def get_json_with_relations(self):
-		return json.dumps({
+		return {
 			"sensor_type_name":self.sensorType.name,
 			"sensor_type_unit":self.sensorType.unit,
 			"sensor_type_measure":self.sensorType.measure,
 			"given_name":self.given_name,
 			"id_number":self.id_number,
 			'entries':self.get_entries_from_sensor_json()
-		})
+		}
 
 	def get_entries_from_sensor_json(self):
 		entries_objects = Entry.objects.filter(sensor=self.id)
@@ -30,6 +32,9 @@ class Sensor(models.Model):
 		for i in entries_objects:
 			entries_json.append(i.get_json())
 		return entries_json
+
+	def __str__()
+		return self.given_name
 
 class Entry(models.Model):
 	sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)

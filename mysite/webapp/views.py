@@ -17,5 +17,5 @@ def index(request):
 	data = []
 	for i in sensors:
 		data.append(i.get_json_with_relations())
-	return HttpResponse(data,content_type='application/json')
+	return HttpResponse(json.dumps(data),content_type='application/json')
 	
