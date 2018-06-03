@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'pi_db',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'NAME': 'pidata',
+        'USER': 'django',
+        'PASSWORD': 'django-user-password',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '8889',
+        'PORT': '',
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
