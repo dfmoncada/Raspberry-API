@@ -1,6 +1,7 @@
 import json
 
 from django.http import HttpResponse
+from datetime import datetime
 from django.utils.dateparse import parse_datetime
 
 from .models import Sensor
@@ -17,7 +18,5 @@ def index(request):
 def str_to_datetime_default(query):
     if not query:
         return query
-    query = list(query)
-    query[-6] = '+'
-    query = "".join(query)
-    return parse_datetime(query)
+    query = datetime.strptime(query, "%Y-%m-%d_%H:%M:%S")
+    return query

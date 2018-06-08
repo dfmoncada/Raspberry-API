@@ -47,8 +47,8 @@ class Sensor(models.Model):
         entries_objects = Entry.objects.filter(sensor=self.id)
 
         today_date = datetime.now()
-        timezone = pytz.timezone("GMT")
-        today_date = timezone.localize(today_date)
+        # timezone = pytz.timezone("GMT")
+        # today_date = timezone.localize(today_date)
 
         if filter_date is not None and filter_date < today_date:
             entries_objects = entries_objects.filter(created_at__range=(filter_date, today_date))
@@ -69,6 +69,6 @@ class Entry(models.Model):
 
     def get_json(self):
         return {
-            'created_at': self.created_at.__str__(),
+            'created_at': self.created_at.strftime("%Y-%m-%d_%H:%M:%S"),
             'value': self.value
         }
