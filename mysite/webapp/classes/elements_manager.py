@@ -1,6 +1,6 @@
 import time
 from .sensors.ds18b20 import DS18B20
-# from .sensors.dht11 import DHT11
+from .sensors.dht11 import DHT11
 import MySQLdb.connections
 from webapp.models import Sensor
 from .config import ConfigSetup
