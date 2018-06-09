@@ -1,3 +1,5 @@
+
+
 class ConfigSetup:
     sensors = [
         {'type': 'ds18b20', 'options': {'name': '28-051693633fff', 'id': 1}},

@@ -15,6 +15,16 @@ def index(request):
     return HttpResponse(json.dumps(sensors_json), content_type='application/json')
 
 
+def activate_thread(request):
+    sensor_id = request.GET.get('id')
+    if sensor_id:
+        if True:
+            return HttpResponse(json.dump({'response': 'change', 'new_status': 'activated'}))
+        return HttpResponse(json.dump({'response': 'change', 'new_status': 'deactivated'}))
+    return HttpResponse(json.dump({'response': 'not found'}))
+
+
+# HELPER FUNCTION, need to find a place for it, should be static
 def str_to_datetime_default(query):
     if not query:
         return query
