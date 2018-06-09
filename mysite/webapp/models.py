@@ -31,6 +31,7 @@ class Sensor(models.Model):
     sensorType = models.ForeignKey(SensorType, on_delete=models.CASCADE)
     given_name = models.CharField(max_length=50)
     id_number = models.CharField(max_length=50)
+    activated = models.BooleanField(default=False)
 
     def get_json_with_relations(self, filter_date):
 

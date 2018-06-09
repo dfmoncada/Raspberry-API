@@ -1,10 +1,11 @@
 import json
+import threading
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from datetime import datetime
-from django.utils.dateparse import parse_datetime
 
 from .models import Sensor
+from .classes.elements_manager import ElementManager
 
 
 # Create your views here.
@@ -16,12 +17,14 @@ def index(request):
 
 
 def activate_thread(request):
-    sensor_id = request.GET.get('id')
-    if sensor_id:
-        if True:
-            return HttpResponse(json.dump({'response': 'change', 'new_status': 'activated'}))
-        return HttpResponse(json.dump({'response': 'change', 'new_status': 'deactivated'}))
-    return HttpResponse(json.dump({'response': 'not found'}))
+    if True:
+        threading.Thread(target=ElementManager.start_read_thread(), args=(), kwargs={})
+        return JsonResponse({'response': 'change', 'new_status': 'activated'})
+    return JsonResponse({'response': 'change', 'new_status': 'deactivated'})
+    # return JsonResponse({'response': 'not found'})
+
+def activate_sensor(request, id):
+    return HttpResponse()
 
 
 # HELPER FUNCTION, need to find a place for it, should be static
