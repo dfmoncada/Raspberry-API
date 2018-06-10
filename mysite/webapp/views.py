@@ -18,13 +18,13 @@ def index(request):
 
 def activate_thread(request):
     if True:
-        threading.Thread(target=ElementManager.start_read_thread(), args=(), kwargs={})
+        threading.Thread(target=ElementManager.start_read_thread(60), args=(), kwargs={})
         return JsonResponse({'response': 'change', 'new_status': 'activated'})
     return JsonResponse({'response': 'change', 'new_status': 'deactivated'})
     # return JsonResponse({'response': 'not found'})
 
 def activate_sensor(request, id):
-    return HttpResponse()
+    return JsonResponse({'response':'Sensors activated (not implemented)'})
 
 
 # HELPER FUNCTION, need to find a place for it, should be static
