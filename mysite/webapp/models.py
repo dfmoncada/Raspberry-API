@@ -6,14 +6,24 @@ from django.db import models
 
 # Create your models here.
 
+class MeasureType(models.Model):
+    measurement = models.CharField(max_length=50)
+    unit = models.CharField(max_length=50)
 
 class SensorType(models.Model):
     name = models.CharField(max_length=50)
-    unit = models.CharField(max_length=50)
-    measure = models.CharField(max_length=50)
+    measurements = models.ManyToManyField(MeasureType)
 
     def __str__(self):
         return self.name
+
+    def get_json_entries(self):
+        entries = []
+        for item in self.measurements:
+            entries.append({"measure": item.measurment,
+                            "unit": item.unit,
+                            "entries": []})
+        return entries
 
 
 class SensorManager(models.Manager):
@@ -28,20 +38,17 @@ class SensorManager(models.Manager):
 
 class Sensor(models.Model):
     objects = SensorManager()
-    sensorType = models.ForeignKey(SensorType, on_delete=models.CASCADE)
+    sensor_type = models.ForeignKey(SensorType, on_delete=models.CASCADE)
     given_name = models.CharField(max_length=50)
-    id_number = models.CharField(max_length=50)
+    location = models.CharField(max_length=50)
     activated = models.BooleanField(default=False)
 
     def get_json_with_relations(self, filter_date):
-
         return {
             "sensor_type_name": self.sensorType.name,
-            "sensor_type_unit": self.sensorType.unit,
-            "sensor_type_measure": self.sensorType.measure,
             "given_name": self.given_name,
-            "id_number": self.id_number,
-            'entries': self.get_entries_from_sensor_json(filter_date)
+            "location": self.location,
+            "types": self.sensor_type.get_entries()
         }
 
     def get_entries_from_sensor_json(self, filter_date):
