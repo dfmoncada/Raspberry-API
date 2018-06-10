@@ -7,8 +7,12 @@ from django.db import models
 # Create your models here.
 
 class MeasureType(models.Model):
-    measurement = models.CharField(max_length=50)
+    measurment = models.CharField(max_length=50)
     unit = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return self.measurement
+        
 
 class SensorType(models.Model):
     name = models.CharField(max_length=50)
@@ -17,13 +21,18 @@ class SensorType(models.Model):
     def __str__(self):
         return self.name
 
-    def get_json_entries(self):
-        entries = []
-        for item in self.measurements:
-            entries.append({"measure": item.measurment,
+    def get_json_entries(self, sensor):
+        types_json = []
+        types = self.measurements.all()
+        for item in types:
+            entries = []
+            entries_objects = sensor.entry_set.filter(type__pk = item.id)
+            for entry in entries_objects:
+                entries.append(entry.get_json())
+            types_json.append({"measure": item.measurment,
                             "unit": item.unit,
-                            "entries": []})
-        return entries
+                            "entries": entries})
+        return types_json 
 
 
 class SensorManager(models.Manager):
@@ -45,10 +54,10 @@ class Sensor(models.Model):
 
     def get_json_with_relations(self, filter_date):
         return {
-            "sensor_type_name": self.sensorType.name,
+            "sensor_type_name": self.sensor_type.name,
             "given_name": self.given_name,
             "location": self.location,
-            "types": self.sensor_type.get_entries()
+            "types": self.sensor_type.get_json_entries(self)
         }
 
     def get_entries_from_sensor_json(self, filter_date):
@@ -73,6 +82,7 @@ class Sensor(models.Model):
 class Entry(models.Model):
     sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
     value = models.FloatField()
+    type = models.ForeignKey(MeasureType, on_delete=models.CASCADE)
     created_at = models.DateTimeField()
 
     def get_json(self):
