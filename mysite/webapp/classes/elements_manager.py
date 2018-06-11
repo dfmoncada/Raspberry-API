@@ -6,16 +6,19 @@ from webapp.models import Sensor
 from .config import ConfigSetup
 
 class ElementManager:
-
-
+    thread = None
+    active = False
     def __init__(self):
         pass
 
     @staticmethod
     def start_read_thread(sleep=600):
-        ElementManager.handle_connection()
-        time.sleep(sleep)
-        ElementManager.start_read_thread(sleep)
+        if ElementManager.active:
+            ElementManager.handle_connection()
+            time.sleep(sleep)
+            ElementManager.start_read_thread(sleep)
+        else:
+            ElementManager.thread = None
 
     @staticmethod
     def handle_connection():

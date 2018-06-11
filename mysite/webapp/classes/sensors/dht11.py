@@ -4,14 +4,14 @@ from datetime import datetime
 class DHT11:
     # [options] json with 'pin'= pin_number, type= any of '11','22','2302' ,
     add_value = ("INSERT INTO webapp_entry "
-                "(sensor_id, value, created_at) "
-                "VALUES (%s, %s, %s)")
+                "(sensor_id, type_id, value, created_at) "
+                "VALUES (%s, %s, %s, %s)")
 
     def __init__(self, options):
         self.pin = options['pin']
         self.type = options['type']
-        self.temp_id = options['id']['temp']
-        self.humid_id = options['id']['humid']
+        self.id = options['id']
+        self.m_type = options['m_type']
 
     def read(self):
         sensor_args = {'11': Adafruit_DHT.DHT11,
@@ -24,9 +24,9 @@ class DHT11:
     def save(self, cursor):
         results = self.read()
         now = datetime.now()
-        data_value_temp = (self.temp_id, results['temp'], now)
-        data_value_humid = (self.humid_id, results['humid'], now)
+        data_value_temp = (self.id, self.m_type['temp'], results['temp'], now)
+        data_value_humid = (self.id, self.m_type['humid'], results['humid'], now)
         cursor.execute(self.add_value, data_value_temp)
         cursor.execute(self.add_value, data_value_humid)
-        print("data inserted=> sensor-id:'" + str(self.temp_id) + '-' + self.type + "', value:" + str(results['temp']))
-        print("data inserted=> sensor-id:'" + str(self.humid_id) + '-' + self.type + "', value:" + str(results['humid']))
+        print("data inserted=> sensor-id:'" + str(self.id) + '- temp -' + self.type + "', value:" + str(results['temp']))
+        print("data inserted=> sensor-id:'" + str(self.id) + '- humid -' + self.type + "', value:" + str(results['humid']))

@@ -15,13 +15,24 @@ def index(request):
     sensors_json = Sensor.objects.get_all_json(filter_date)
     return HttpResponse(json.dumps(sensors_json), content_type='application/json')
 
-
-def activate_thread(request):
-    if True:
-        threading.Thread(target=ElementManager.start_read_thread(60), args=(), kwargs={})
-        return JsonResponse({'response': 'change', 'new_status': 'activated'})
-    return JsonResponse({'response': 'change', 'new_status': 'deactivated'})
+# Thread is not starting on the background, so the page get's stuck after starting it.
+def activate_thread(request, sleep = 60):
+    print(ElementManager.thread, ElementManager.active ,'hola')
+    if not ElementManager.thread:
+        ElementManager.thread = threading.Thread(target=ElementManager.start_read_thread, args={sleep}, kwargs={})
+        ElementManager.active = True
+        ElementManager.thread.start()
+        return JsonResponse({'response':'change', 'new_status': 'activated'})
+    return JsonResponse({'response': 'unchanged', 'status': 'activated'})
     # return JsonResponse({'response': 'not found'})
+
+def deactivate_thread(request):
+    changed = 'unchanged'
+    if ElementManager.active:
+        changed = 'changed'
+    ElementManager.active = False
+    return JsonResponse({'response':changed,'status':'deactivated'})
+        
 
 def activate_sensor(request, id):
     return JsonResponse({'response':'Sensors activated (not implemented)'})

@@ -26,7 +26,7 @@ class SensorType(models.Model):
         types = self.measurements.all()
         for item in types:
             entries = []
-            entries_objects = sensor.entry_set.filter(type__pk = item.id)
+            entries_objects = sensor.entry_set.filter(type__pk = item.id).order_by("-created_at")
             for entry in entries_objects:
                 entries.append(entry.get_json())
             types_json.append({"measure": item.measurment,
@@ -51,9 +51,11 @@ class Sensor(models.Model):
     given_name = models.CharField(max_length=50)
     location = models.CharField(max_length=50)
     activated = models.BooleanField(default=False)
+    options = models.CharField(max_length=150)
 
     def get_json_with_relations(self, filter_date):
         return {
+            "sensor_id": self.id,
             "sensor_type_name": self.sensor_type.name,
             "given_name": self.given_name,
             "location": self.location,
