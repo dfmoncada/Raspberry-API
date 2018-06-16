@@ -11,7 +11,7 @@ class MeasureType(models.Model):
     unit = models.CharField(max_length=50)
     
     def __str__(self):
-        return self.measurement
+        return self.unit
         
 
 class SensorType(models.Model):
@@ -92,3 +92,5 @@ class Entry(models.Model):
             'created_at': self.created_at.strftime("%Y-%m-%d_%H:%M:%S"),
             'value': self.value
         }
+    def __str__(self):
+        return self.sensor.given_name + ':'+str(self.value)+'('+self.created_at.strftime("%Y-%m-%d_%H:%M:%S")+")"
