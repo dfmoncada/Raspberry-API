@@ -17,25 +17,27 @@ def index(request):
 
 # Thread is not starting on the background, so the page get's stuck after starting it.
 def activate_thread(request, sleep = 60):
-    print(ElementManager.thread, ElementManager.active ,'hola')
-    if not ElementManager.thread:
-        ElementManager.thread = threading.Thread(target=ElementManager.start_read_thread, args={sleep}, kwargs={})
-        ElementManager.active = True
-        ElementManager.thread.start()
+    if not ElementManager.element_manager:
+        ElementManager.element_manager = ElementManager()
+        try:
+            sleep = int(sleep)
+        except:
+            return JsonResponse({'response':'error', 'message':'input a correct integer value'})
+        threading.Thread(target=ElementManager.element_manager.start_read_thread, args={sleep}, kwargs={}).start()
         return JsonResponse({'response':'change', 'new_status': 'activated'})
     return JsonResponse({'response': 'unchanged', 'status': 'activated'})
     # return JsonResponse({'response': 'not found'})
 
 def deactivate_thread(request):
     changed = 'unchanged'
-    if ElementManager.active:
+    if ElementManager.element_manager:
         changed = 'changed'
-    ElementManager.active = False
+        ElementManager.element_manager.deactivate_thread()
     return JsonResponse({'response':changed,'status':'deactivated'})
         
 
 def activate_sensor(request, id):
-    return JsonResponse({'response':'Sensors activated (not implemented)'})
+    return JsonResponse({'response':'Sensors activated (not implemented)', 'sensor_id':id})
 
 
 # HELPER FUNCTION, need to find a place for it, should be static

@@ -25,7 +25,7 @@ SECRET_KEY = '$8in6oq5m9&225t2ljbnmsa7fx1yr-h$cxfix#9a7qpo@5snn1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [0,0,0,0]
 
 
 # Application definition
@@ -125,5 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.0.10', 'mywebsite.com','99.225.25.240']
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.0.10', 'mywebsite.com','99.225.25.240', 'berryface.pagekite.me']
