@@ -41,10 +41,11 @@ class SensorType(models.Model):
     def get_json_live(self, sensor):
         types_json = []
         element_manager = ElementManager()
-        types = self.measurement.all()
-        for item in types:
+        types = self.measurements.all()
+        measure_values = element_manager.get_live(sensor) 
+        for i, item in enumerate(types, start=0):
             type_temp = item.json_info()
-            type_temp['entry'] = element_manager.get_live(sensor)
+            type_temp['entry'] = measure_values[i]
             types_json.append(type_temp)
         return types_json
 
@@ -72,8 +73,8 @@ class SensorManager(models.Manager):
         return SensorManager.list_to_json(sensors_all, filter_date)
  
     def get_all_live_json(self):
-        sensors_all = elem_manager.get_live()
-        return SensorManager.list_to_live_json(sensor_all)
+        sensors_all = self.all()
+        return SensorManager.list_to_live_json(sensors_all)
 
     @staticmethod
     def list_to_json(sensors_all, filter_date):
@@ -85,7 +86,7 @@ class SensorManager(models.Manager):
     @staticmethod
     def list_to_live_json(sensors_all):
         json_all = []
-        for item in sensors_all():
+        for item in sensors_all:
             json_all.append(item.get_live_json())
         return json_all
 
@@ -112,7 +113,7 @@ class Sensor(models.Model):
 
     def get_live_json(self):
         json_object = self.json_info()
-        json_object['types'] = self.sensor_type.get_live_json(self)
+        json_object['types'] = self.sensor_type.get_json_live(self)
         return json_object
          
 
@@ -176,8 +177,9 @@ class ElementManager:
         ElementManager.element_manager = None
         self.active = False
 
-    def get_live(self):
-        return {'not implemented'}
+    def get_live(self, sensor):
+        sensor_class = ElementManager.get_class_object(sensor)
+        return sensor_class.read() 
 
     @staticmethod
     def get_class_object(sensor):
