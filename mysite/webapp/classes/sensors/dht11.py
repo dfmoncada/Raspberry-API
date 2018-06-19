@@ -6,7 +6,7 @@ class DHT11:
     add_value = ("INSERT INTO webapp_entry "
                 "(sensor_id, type_id, value, created_at) "
                 "VALUES (%s, %s, %s, %s)")
-
+    value_names = ['temp', 'humid']
     def __init__(self, options):
         self.pin = options['pin']
         self.type = options['type']
@@ -19,14 +19,14 @@ class DHT11:
                        '2302': Adafruit_DHT.AM2302}
         sensor = sensor_args[self.type]
         humidity, temperature = Adafruit_DHT.read_retry(sensor, self.pin)
-        return {'temp': temperature, 'humid': humidity}
+        return [temperature, humidity]
 
     def save(self, cursor):
         results = self.read()
         now = datetime.now()
-        data_value_temp = (self.id, self.m_type['temp'], results['temp'], now)
-        data_value_humid = (self.id, self.m_type['humid'], results['humid'], now)
-        cursor.execute(self.add_value, data_value_temp)
-        cursor.execute(self.add_value, data_value_humid)
-        print("data inserted=> sensor-id:'" + str(self.id) + '- temp -' + self.type + "', value:" + str(results['temp']))
-        print("data inserted=> sensor-id:'" + str(self.id) + '- humid -' + self.type + "', value:" + str(results['humid']))
+        
+        for i, result in (enumerate(results,start=0)):
+            data_value = (self.id, self.m_type[DHT11.value_names[i]], results[i], now) 
+            cursor.execute(self.add_value, data_value)
+            print("data inserted=> sensor-id:" + str(self.id) + ', measure_type - ' + DHT11.value_names[i] + ', sensor type:' + self.type + ",  value:" + str(results[i]))
+        

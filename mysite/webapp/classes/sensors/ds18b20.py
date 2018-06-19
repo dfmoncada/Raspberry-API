@@ -27,11 +27,12 @@ class DS18B20:
             lines = DS18B20.read_temp_raw(self.name)
         equals_pos = lines[1].find('t=') + 2
         temp = float(lines[1][equals_pos:]) / 1000
-        return temp
+        return [temp]
 
     def save(self, cursor):
-        value = self.read()
+        value = self.read()[0]
         now = datetime.now()
         data_value = (self.id, self.m_type, value, now)
         cursor.execute(self.add_value, data_value)
         print("data inserted=> sensor-id:'" + str(self.id) + '-' + self.name + "', value:" + str(value))
+

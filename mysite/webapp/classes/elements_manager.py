@@ -3,7 +3,7 @@ import json
 from .sensors.ds18b20 import DS18B20
 from .sensors.dht11 import DHT11
 import MySQLdb.connections
-from webapp.models import Sensor
+#from ..models import Sensor
 from .config import ConfigSetup
 
 class ElementManager:
@@ -26,13 +26,10 @@ class ElementManager:
         sensors = Sensor.objects.all();
         for sensor in sensors:
             try:
-                sensor_class = globals()[sensor.sensor_type.name]
-                print('sensor:'+str(sensor.given_name),',options:',json.loads(sensor.options))
-                sensor_object = sensor_class(json.loads(sensor.options))
+                sensor_class = ElementManager.get_class_object(sensor)
                 sensor_object.save(cursor)
             except Exception as e:
                 print("error(sensor_id:"+str(sensor.id)+"):", e)
-
         # Insert new rows into entries for each sensor
         cnx.commit()
         print("loop commited.")
@@ -43,3 +40,9 @@ class ElementManager:
     def deactivate_thread(self):
         ElementManager.element_manager = None
         self.active = False
+
+    @staticmethod
+    def get_class_object(sensor):
+        sensor_class = gloabls()[sensor.sensor_type.name]
+        print('sensor:' + sensor.given_name, 'options:', json.loads(sensor.options))
+        return sensor_class(json.loads(sensor.options))
