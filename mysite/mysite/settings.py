@@ -128,4 +128,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.0.10', 'mywebsite.com','99.225.25.240', 'berryface.pagekite.me']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.0.10', 'mywebsite.com','99.225.25.240', 'berryface.pagekite.me', '192.168.1.109']
+
+#ALLOWED_HOSTS += ip_addresses()
+

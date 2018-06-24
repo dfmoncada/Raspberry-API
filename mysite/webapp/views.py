@@ -27,6 +27,18 @@ def live_read(request):
     sensors_live_json = Sensor.objects.get_all_live_json()
     return JsonResponse({'response':'Ok', 'data':sensors_live_json})
 
+def turn_on(request):
+    f=open("/sys/class/gpio/gpio18/value", "w+")
+    f.write("0")
+    f.close()
+    return JsonResponse({'response':'Ok'}) 
+
+def turn_off(request):
+    f=open("/sys/class/gpio/gpio18/value", "w+")
+    f.write("1")
+    f.close()
+    return JsonResponse({'response':'Ok'}) 
+
 # HELPER FUNCTION, need to find a place for it, should be static
 def str_to_datetime_default(query):
     if not query:

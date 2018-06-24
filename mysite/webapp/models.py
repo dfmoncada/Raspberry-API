@@ -25,7 +25,7 @@ class SensorType(models.Model):
     def __str__(self):
         return self.name
 
-    def get_json_entries(self, sensor):
+    def get_json_entries(self, sensor, filter_date):
         types_json = []
         types = self.measurements.all()
         for item in types:
@@ -100,7 +100,7 @@ class Sensor(models.Model):
 
     def get_json_with_relations(self, filter_date):
         json_object = self.json_info()
-        json_object['types'] = self.sensor_type.get_json_entries(self)
+        json_object['types'] = self.sensor_type.get_json_entries(self, filter_date)
         return json_object
 
     def json_info(self):
