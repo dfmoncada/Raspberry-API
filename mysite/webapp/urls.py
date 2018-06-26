@@ -10,4 +10,6 @@ urlpatterns = [
     url(r'^live_read/$', views.live_read, name='live_read'),
     url(r'^turn_on/$', views.turn_on, name='turn_on'),
     url(r'^turn_off/$', views.turn_off, name='turn_off'),
+    url(r'^rule_on/$', views.rule_on, name='rule_on'),
+    url(r'^rule_off/$', views.rule_off, name='rule_off'),
 ]

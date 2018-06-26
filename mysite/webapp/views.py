@@ -43,6 +43,12 @@ def turn_off(request):
     f.close()
     return JsonResponse({'response':'Ok'}) 
 
+def rule_on(request):
+    return JsonResponse(Sensor.objects.activate_rule())
+
+def rule_off(request):
+    return JsonResponse(Sensor.objects.deactivate_rule())
+
 # HELPER FUNCTION, need to find a place for it, should be static
 def str_to_datetime_default(query):
     if not query:

@@ -40,7 +40,7 @@ class SensorType(models.Model):
     
     def get_json_live(self, sensor):
         types_json = []
-        element_manager = ElementManager()
+        element_manager = ElementManager('')
         types = self.measurements.all()
         measure_values = element_manager.get_live(sensor) 
         for i, item in enumerate(types, start=0):
@@ -52,7 +52,7 @@ class SensorType(models.Model):
 class SensorManager(models.Manager):
     def activate_thread(self, sleep):
         if not ElementManager.element_manager:
-            ElementManager.element_manager = ElementManager()
+            ElementManager.element_manager = ElementManager('sensor')
             try:
                 sleep = int(sleep)
             except:
@@ -65,7 +65,21 @@ class SensorManager(models.Manager):
         changed = 'unchanged'
         if ElementManager.element_manager:
             changed = 'changed'
-            ElementManager.elemenet_manager.deactivate_thread()
+            ElementManager.element_manager.deactivate_thread()
+        return {'response':changed, 'status':'deactivated'}
+
+    def activate_rule(rule):
+        if not ElementManager.element_manager2:
+            ElementManager.element_manager2 = ElementManager('rule')
+            threading.Thread(target=ElementManager.element_manager2.start_rule, args={5}, kwargs={}).start()
+            return {'response':'change', 'new_status': 'activated'}
+        return {'response':'unchanged', 'status': 'activated'}
+    
+    def deactivate_rule(self):
+        changed = 'unchanged'
+        if ElementManager.element_manager2:
+            changed = 'changed'
+            ElementManager.element_manager2.deactivate_rule()
         return {'response':changed, 'status':'deactivated'}
 
     def get_all_json(self, filter_date):
@@ -148,9 +162,32 @@ class Entry(models.Model):
 
 class ElementManager:
     element_manager = None
-    def __init__(self):
-        ElementManager.elemenet_manager = self
+    element_manager2 = None
+    def __init__(self, type_n):
+        if type_n == 'sensor':
+            ElementManager.element_manager = self
+        elif type_n == 'rule':
+            ElementManager.element_manager2 = self
         self.active = True
+
+    def start_rule(self, sleep):
+        if self.active:
+            try:
+                read = Sensor.objects.get_all_live_json()
+                result = 0
+                if read[0]['types'][0]['entry'] > 26:
+                    result = 1
+                f=open("/sys/class/gpio/gpio18/value", "w+")
+                f.write(str(result))
+                f.close()
+            except Exception as e:
+                print(e)
+            time.sleep(sleep)
+            self.start_rule(sleep)
+    
+    def deactivate_rule(self):
+        ElementManager.element_manager2 = None
+        self.active = False
 
     def start_read_thread(self, sleep):
         if self.active:
