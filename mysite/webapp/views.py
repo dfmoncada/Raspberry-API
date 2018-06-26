@@ -24,7 +24,11 @@ def activate_sensor(request, id):
     return JsonResponse({'response':'Sensors activated (not implemented)', 'sensor_id':id})
 
 def live_read(request):
-    sensors_live_json = Sensor.objects.get_all_live_json()
+    sensor_live_json = {'response':'error', 'message':'please try again later'}
+    try:
+        sensors_live_json = Sensor.objects.get_all_live_json()
+    except Exception as e:
+        print(e)
     return JsonResponse({'response':'Ok', 'data':sensors_live_json})
 
 def turn_on(request):

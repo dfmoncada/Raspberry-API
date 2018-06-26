@@ -62,7 +62,7 @@ class SensorManager(models.Manager):
         return {'response':'unchanged', 'status': 'activated'}
 
     def deactivate_thread(self):
-        change = 'unchanged'
+        changed = 'unchanged'
         if ElementManager.element_manager:
             changed = 'changed'
             ElementManager.elemenet_manager.deactivate_thread()
